@@ -4,6 +4,7 @@ const app = express();
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const exphbs = require("express-handlebars");
+const passport = require('passport');
 
 app.engine(
   "handlebars",
@@ -16,6 +17,8 @@ app.set("view engine", "handlebars");
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 

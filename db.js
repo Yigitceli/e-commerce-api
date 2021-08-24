@@ -8,5 +8,7 @@ const db = pgp({
     max: 30
 });
 
+const result = db.query('SELECT * FROM test WHERE username=$1', ['yigitceli']).then(result => console.log(result));
+
 
 module.exports = db;
