@@ -4,7 +4,7 @@ const app = express();
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const exphbs = require("express-handlebars");
-const passport = require('passport');
+const passport = require("passport");
 
 app.engine(
   "handlebars",
@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 
@@ -27,11 +28,14 @@ app.get("/", (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.status(404).send('404 not found');
+  res.status(404).send("404 not found");
 });
 
 app.use((err, req, res, next) => {
-  res.status(err.status).send(err.message);
+  res.locals.error = err;
+  const status = err.status || 500;
+  res.status(status);
+  res.status(status).send("Error");
 });
 
 app.listen(3000, () => {
