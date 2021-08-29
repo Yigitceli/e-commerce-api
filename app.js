@@ -1,43 +1,33 @@
-const express = require("express");
-const morgan = require("morgan");
+const express =         require('express');
+const dotenv =          require('dotenv').config();
+const morgan =          require('morgan');
+const exphbs =          require('express-handlebars');
+const cors =            require('cors');
+const indexRouter =     require('./routes/index.js');
+const passport =        require('./auth.js');
+
+
+
+
+
+
+
+
+
 const app = express();
-const indexRouter = require("./routes/index");
-const userRouter = require("./routes/user");
-const exphbs = require("express-handlebars");
-const passport = require("passport");
 
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main",
-  })
-);
-app.set("view engine", "handlebars");
-
-app.use(morgan("dev"));
+app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+app.use('/api', indexRouter);
 
-app.use("/", indexRouter);
-app.use("/user", userRouter);
 
-app.get("/", (req, res, next) => {
-  res.render("pages/index");
-});
 
-app.use((req, res, next) => {
-  res.status(404).send("404 not found");
-});
 
-app.use((err, req, res, next) => {
-  res.locals.error = err;
-  const status = err.status || 500;
-  res.status(status);
-  res.status(status).send("Error");
-});
 
-app.listen(3000, () => {
-  console.log("App listening at" + 3000);
-});
+app.listen(process.env.PORT || 3001, () => {console.log(`Server listening at ${process.env.PORT}`)});
