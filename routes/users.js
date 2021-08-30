@@ -4,6 +4,37 @@ const db = require("../db.js");
 const passport = require("passport");
 
 
+usersRouter.get("/login", (req, res, next) => {
+  res.render("./pages/login");
+});
+
+usersRouter.get("/register", (req, res, next) => {
+  res.render("./pages/register");
+});
+
+usersRouter.post("/register", async (req, res, next) => {
+  const user = req.body;
+  try {
+    if (user.username.length < 4 || user.password.length < 4) {
+      res.redirect("register");
+    } else {
+      await db.result("INSERT INTO users(username, password) VALUES($1, $2)", [
+        user.username,
+        user.password,
+      ]);
+
+      res.redirect("login");
+    }
+  } catch (err) {
+    res.send(500);
+  }
+});
+
+usersRouter.post("/login", passport.authenticate("local"), (req, res) => {
+  res.send(200);
+});
+
+
 usersRouter.use("/:id", async(req, res, next) => {
   try {
     const user = await db.one("SELECT * FROM users WHERE user_id=$1", [req.params.id]);    
@@ -50,34 +81,9 @@ usersRouter.get("/", async (req, res, next) => {
 
 
 
-usersRouter.get("/login", (req, res, next) => {
-  res.render("./pages/login");
-});
 
-usersRouter.get("/register", (req, res, next) => {
-  res.render("./pages/register");
-});
 
-usersRouter.post("/register", async (req, res, next) => {
-  const user = req.body;
-  try {
-    if (user.username.length < 4 || user.password.length < 4) {
-      res.redirect("register");
-    } else {
-      await db.result("INSERT INTO users(username, password) VALUES($1, $2)", [
-        user.username,
-        user.password,
-      ]);
 
-      res.redirect("login");
-    }
-  } catch (err) {
-    res.send(500);
-  }
-});
 
-usersRouter.post("/login", passport.authenticate("local"), (req, res) => {
-  res.send(200);
-});
 
 module.exports = usersRouter;
