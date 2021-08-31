@@ -19,6 +19,8 @@
     "nodemon": "^2.0.12",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "pg-promise": "^10.11.0"
+    "pg": "^8.7.1",
+    "pg-promise": "^10.11.0",
+    "stripe": "^8.171.0"
   }
 }

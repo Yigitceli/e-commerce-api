@@ -33,7 +33,7 @@ passport.serializeUser(function(user, done) {
   });
   
   passport.deserializeUser(function(id, done) {
-    db.query('SELECT * FROM users WHERE user_id=$1', [id]).then(user => done(user)).catch(err => done(err));
+    db.one('SELECT * FROM users WHERE user_id=$1', [id]).then(user => done(user.user_id)).catch(err => done(err));
     
   });
 
